@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>西南油气田单身职工联谊活动</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; }
+
+/* ========== 主滑动容器 ========== */
+#slider {
+  width: 100%; height: 100%;
+  transition: transform 0.72s cubic-bezier(0.77,0,0.175,1);
+  will-change: transform;
+}
+.slide {
+  width: 100%; height: 100vh;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+
+/* ========== 背景 ========== */
+.bg { position: absolute; inset: 0; transform: scale(1.08); transition: transform 1.2s ease; }
+.slide.active .bg { transform: scale(1); }
+.bg-overlay { position: absolute; inset: 0; }
+
+/* 封面 — 深紫辉光 */
+.s0 .bg { background: #1a0030; }
+.s0 .bg-overlay { background: transparent; }
+
+/* 流程 */
+.s1 .bg { background: linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%); }
+.s1 .bg-overlay { background: rgba(0,0,0,0.35); }
+
+/* 游戏 */
+.s2 .bg { background: linear-gradient(160deg,#1a0533 0%,#4a1259 50%,#8b2fc9 100%); }
+.s2 .bg-overlay { background: rgba(0,0,0,0.3); }
+
+/* 晚间 */
+.s3 .bg { background: linear-gradient(135deg,#0d1b2a 0%,#1b3a5c 50%,#2e6da4 100%); }
+.s3 .bg-overlay { background: rgba(0,0,0,0.35); }
+
+/* 奖品 */
+.s4 .bg { background: linear-gradient(160deg,#1a0a00 0%,#5c2400 50%,#c0571a 100%); }
+.s4 .bg-overlay { background: rgba(0,0,0,0.4); }
+
+/* 报名 */
+.s5 .bg { background: linear-gradient(135deg,#003322 0%,#006644 50%,#00a86b 100%); }
+.s5 .bg-overlay { background: rgba(0,0,0,0.35); }
+
+/* 广场 */
+.s6 .bg { background: linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); }
+.s6 .bg-overlay { background: rgba(0,0,0,0.3); }
+
+/* 消息 */
+.s7 .bg { background: linear-gradient(135deg,#2d0036 0%,#6a0572 50%,#e040a0 100%); }
+.s7 .bg-overlay { background: rgba(0,0,0,0.4); }
+
+/* 照片直播 */
+.s8 .bg { background: linear-gradient(135deg,#0a1628 0%,#1e3a5f 50%,#0e4d8a 100%); }
+.s8 .bg-overlay { background: rgba(0,0,0,0.35); }
+
+
+/* 粒子 */
+.particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.particle {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  animation: floatP linear infinite;
+}
+@keyframes floatP {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; } 90% { opacity: 1; }
+  100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+/* ========== 入场动画 ========== */
+.content { position: relative; z-index: 10; width: 100%; padding: 0 1.5rem; text-align: center; color: white; }
+.anim-up   { opacity: 0; transform: translateY(40px);  transition: opacity 0.6s ease, transform 0.6s ease; }
+.anim-down { opacity: 0; transform: translateY(-30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.anim-scale{ opacity: 0; transform: scale(0.85);       transition: opacity 0.6s ease, transform 0.6s ease; }
+.slide.active .anim-up,
+.slide.active .anim-down,
+.slide.active .anim-scale { opacity: 1; transform: none; }
+.d1{transition-delay:.10s} .d2{transition-delay:.25s} .d3{transition-delay:.40s}
+.d4{transition-delay:.55s} .d5{transition-delay:.70s}
+
+/* ========== 右侧圆点 ========== */
+#dots {
+  position: fixed; right: 14px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px; z-index: 200;
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: 1.5px solid rgba(255,255,255,0.6);
+  cursor: pointer; transition: all 0.3s ease;
+}
+.dot.active { background: white; transform: scale(1.3); box-shadow: 0 0 8px rgba(255,255,255,0.8); }
+
+/* ========== 滑动提示 ========== */
+#swipe-hint-el {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: rgba(255,255,255,0.6); font-size: 12px; z-index: 200;
+  animation: bounce 2s ease-in-out infinite;
+  pointer-events: none; transition: opacity 0.5s;
+}
+#swipe-hint-el svg { width: 20px; height: 20px; }
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+/* ========== SLIDE 0：封面（优化版） ========== */
+@keyframes rotateRing{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes rotateRingR{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes pulseCore{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes shimmerLine{0%,100%{opacity:.3;transform:scaleX(.4)}50%{opacity:1;transform:scaleX(1)}}
+@keyframes floatDot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes twinkle{0%,100%{opacity:.12}50%{opacity:.65}}
+
+.s0 .bg{background:#0d0018 !important;transform:none !important;}
+.cv-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.cv-star{position:absolute;border-radius:50%;background:white;animation:twinkle ease-in-out infinite;}
+.cv-glow1{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.35) 0%,rgba(99,40,180,.15) 40%,transparent 70%);pointer-events:none;}
+.cv-glow2{position:absolute;bottom:-60px;left:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.22) 0%,transparent 65%);pointer-events:none;}
+.cv-glow3{position:absolute;bottom:100px;right:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 65%);pointer-events:none;}
+.cv-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+
+.cv-top{position:relative;z-index:10;display:flex;align-items:center;gap:8px;padding-top:calc(18px + env(safe-area-inset-top));}
+.cv-brand-line{width:28px;height:1px;background:rgba(216,180,254,.5);}
+.cv-badge{font-size:11px;color:rgba(216,180,254,.7);letter-spacing:2.5px;font-weight:500;}
+
+.cv-hero{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0;}
+.cv-ring-wrap{position:relative;width:110px;height:110px;margin-bottom:16px;}
+.cv-ring-outer{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(216,180,254,.18);animation:rotateRing 18s linear infinite;}
+.cv-ring-outer::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:rgba(216,180,254,.8);}
+.cv-ring-inner{position:absolute;inset:10px;border-radius:50%;border:1px dashed rgba(236,72,153,.25);animation:rotateRingR 12s linear infinite;}
+.cv-ring-inner::before{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:rgba(236,72,153,.7);}
+.cv-core{position:absolute;inset:20px;border-radius:50%;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);display:flex;align-items:center;justify-content:center;font-size:28px;animation:pulseCore 3.5s ease-in-out infinite;backdrop-filter:blur(4px);}
+.cv-title-group{text-align:center;margin-bottom:14px;}
+.cv-title-en{font-size:10px;letter-spacing:4px;color:rgba(216,180,254,.5);font-weight:500;margin-bottom:8px;text-transform:uppercase;}
+.cv-title{font-size:38px;font-weight:800;color:white;line-height:1.15;letter-spacing:4px;text-shadow:0 0 60px rgba(168,85,247,.6),0 0 20px rgba(168,85,247,.3);text-align:center;}
+.cv-deco-line{display:flex;align-items:center;gap:10px;margin:0 0 12px;}
+.cv-deco-bar{width:40px;height:1px;background:rgba(216,180,254,.4);transform-origin:center;animation:shimmerLine 2.5s ease-in-out infinite;}
+.cv-deco-diamond{width:5px;height:5px;background:rgba(216,180,254,.7);transform:rotate(45deg);}
+.cv-sub-tags{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+.cv-sub-tag{font-size:11px;color:rgba(255,255,255,.6);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);letter-spacing:.5px;}
+.cv-date{display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.45);border-radius:20px;padding:6px 18px;font-size:13px;font-weight:600;color:rgba(216,180,254,.95);letter-spacing:1px;}
+.cv-date-dot{width:5px;height:5px;border-radius:50%;background:#a78bfa;animation:floatDot 2s ease-in-out infinite;}
+
+.cv-menu{position:relative;z-index:10;width:100%;padding:0 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.cv-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 6px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:background .2s,border-color .2s,transform .15s;text-align:center;}
+.cv-item:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);transform:translateY(-1px);}
+.cv-item:active{transform:scale(.96);}
+.cv-item.full{}
+.ci-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-bottom:1px;}
+.ci-text{display:flex;flex-direction:column;gap:1px;min-width:0;align-items:center;}
+.ci-num{font-size:8px;color:rgba(255,255,255,.28);font-weight:600;letter-spacing:.3px;}
+.ci-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+
+.cv-foot{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,.3);font-size:10px;letter-spacing:1px;
+  animation:floatDot 2.5s ease-in-out infinite;
+}
+.cv-foot svg { width:16px; height:16px; }
+
+/* ========== 公共页头 ========== */
+.pg-wrap{position:relative;z-index:10;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px;gap:0;}
+.pg-eyebrow{font-size:10px;letter-spacing:4px;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:6px;}
+.pg-title{font-size:30px;font-weight:800;color:white;letter-spacing:3px;margin-bottom:4px;text-align:center;text-shadow:0 0 30px rgba(255,255,255,.15);}
+.pg-rule{width:32px;height:2px;border-radius:1px;background:rgba(255,255,255,.35);margin:0 auto 20px;}
+
+/* ========== SLIDE 1：活动流程 ========== */
+.tl-card-new{
+  max-width:340px;width:100%;
+  display:flex;flex-direction:column;gap:0;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;overflow:hidden;
+  backdrop-filter:blur(10px);
+}
+.tl-row-new{display:flex;align-items:stretch;gap:0;border-bottom:1px solid rgba(255,255,255,.07);}
+.tl-row-new:last-child{border-bottom:none;}
+.tl-left-new{
+  display:flex;flex-direction:column;align-items:center;
+  padding:16px 0;width:64px;flex-shrink:0;
+  border-right:1px solid rgba(255,255,255,.07);
+}
+.tl-icon-new{font-size:20px;margin-bottom:4px;}
+.tl-dur-new{font-size:9px;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.5px;writing-mode:horizontal-tb;}
+.tl-body-new{padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:center;}
+.tl-time-new{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-bottom:4px;}
+.tl-name-new{font-size:14px;font-weight:700;color:white;margin-bottom:4px;}
+.tl-desc-new{font-size:11px;color:rgba(255,255,255,.6);line-height:1.55;}
+.tl-accent{width:3px;flex-shrink:0;border-radius:0;}
+
+/* ========== SLIDE 2：破冰游戏 ========== */
+.games-grid-new{
+  max-width:340px;width:100%;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+}
+.gc{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:12px 10px;
+  text-align:center;backdrop-filter:blur(8px);
+  position:relative;overflow:hidden;
+}
+.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.gc-c1::before{background:#d4537e;} .gc-c2::before{background:#7f77dd;}
+.gc-c3::before{background:#1d9e75;} .gc-c4::before{background:#d85a30;}
+.gc-c5::before{background:#378add;} .gc-c6::before{background:#ba7517;}
+.gc-alt{border-style:dashed;opacity:.7;}
+.gc-num{font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px;margin-bottom:4px;}
+.gc-name{font-size:12px;font-weight:700;color:white;margin-bottom:4px;line-height:1.3;}
+.gc-dur{font-size:10px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);padding:1px 6px;border-radius:6px;display:inline-block;}
+.games-hint-new{font-size:10px;color:rgba(255,255,255,.3);margin-top:10px;letter-spacing:.5px;}
+
+/* ========== SLIDE 3：晚间精彩 ========== */
+.hl-grid{
+  max-width:340px;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.hl-card{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:14px 12px;
+  backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;gap:8px;
+}
+.hl-card-icon{font-size:24px;}
+.hl-card-name{font-size:13px;font-weight:700;color:white;line-height:1.3;}
+.hl-card-desc{font-size:11px;color:rgba(255,255,255,.55);line-height:1.5;}
+.hl-card.span2{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px;padding:12px 16px;}
+.hl-card.span2 .hl-card-text{flex:1;}
+
+/* ========== SLIDE 4：丰厚奖品 ========== */
+.prize-grid-new{
+  max-width:340px;width:100%;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+}
+.pz{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:14px 8px 12px;
+  text-align:center;backdrop-filter:blur(8px);
+  position:relative;overflow:hidden;
+}
+.pz::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.pz-c1::after{background:rgba(245,158,11,.6);}
+.pz-c2::after{background:rgba(236,72,153,.6);}
+.pz-c3::after{background:rgba(99,102,241,.6);}
+.pz-c4::after{background:rgba(16,185,129,.6);}
+.pz-c5::after{background:rgba(168,85,247,.6);}
+.pz-c6::after{background:rgba(239,68,68,.6);}
+.pz-icon{font-size:26px;margin-bottom:7px;display:block;}
+.pz-name{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;line-height:1.35;}
+
+/* ========== SLIDE 5：参与报名 ========== */
+.reg-wrap { max-width:340px; margin:0 auto; width:100%; }
+.form-card { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:1.125rem; backdrop-filter:blur(12px); }
+.fl { font-size:11px; opacity:.6; margin-bottom:5px; display:block; font-weight:600; letter-spacing:.5px; }
+.fi { width:100%; padding:9px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:white; font-size:13px; outline:none; font-family:inherit; transition:border .2s; }
+.fi::placeholder { color:rgba(255,255,255,.3); }
+.fi:focus { border-color:rgba(255,255,255,.5); background:rgba(255,255,255,.12); }
+.fi option { background:#1a0a2e; color:white; }
+.fg { margin-bottom:9px; }
+.fr2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.gender-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.gr { display:none; }
+.gl { padding:8px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:rgba(255,255,255,.7); font-size:12px; cursor:pointer; text-align:center; transition:all .2s; font-family:inherit; }
+.gr:checked + .gl { background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.5); color:white; font-weight:600; }
+.av-row { display:flex; gap:7px; flex-wrap:wrap; }
+.ai { display:none; }
+.al { width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; transition:all .2s; background:rgba(255,255,255,.06); }
+.ai:checked + .al { border-color:white; background:rgba(255,255,255,.2); transform:scale(1.1); }
+.reg-btn { width:100%; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,.92); color:#3b0764; font-size:14px; font-weight:700; cursor:pointer; margin-top:8px; font-family:inherit; transition:opacity .2s; }
+.reg-btn:active { opacity:.85; }
+.profile-done { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); border-radius:18px; padding:1.25rem 1.125rem; backdrop-filter:blur(12px); text-align:center; }
+.pd-avatar { font-size:52px; margin-bottom:8px; }
+.pd-name { font-size:20px; font-weight:700; margin-bottom:4px; color:white; }
+.pd-no { font-size:11px; opacity:.5; margin-bottom:.875rem; color:white; }
+.pd-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.08); font-size:12px; text-align:left; color:white; }
+.pd-row:last-child { border-bottom:none; }
+.pd-lbl { opacity:.5; }
+.pd-val { font-weight:600; }
+.edit-btn-w { width:100%; padding:9px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:transparent; color:white; font-size:12px; font-weight:600; cursor:pointer; margin-top:10px; font-family:inherit; }
+
+/* ========== SLIDE 6：参与者广场 ========== */
+.sq-wrap { max-width:340px; margin:0 auto; width:100%; }
+.sq-filters { display:flex; gap:8px; justify-content:center; margin-bottom:10px; }
+.sq-chip { padding:5px 14px; border-radius:20px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.06); color:rgba(255,255,255,.7); font-size:11px; cursor:pointer; font-family:inherit; transition:all .2s; }
+.sq-chip.active { background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.5); color:white; font-weight:600; }
+.sq-list { display:flex; flex-direction:column; gap:7px; max-height:52vh; overflow-y:auto; }
+.sq-list::-webkit-scrollbar { display:none; }
+.sq-card { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:.7rem .875rem; backdrop-filter:blur(8px); cursor:pointer; transition:background .2s; }
+.sq-card:active { background:rgba(255,255,255,.15); }
+.sq-av { font-size:26px; width:42px; height:42px; background:rgba(255,255,255,.1); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sq-info { flex:1; text-align:left; min-width:0; }
+.sq-name  { font-size:13px; font-weight:700; margin-bottom:2px; color:white; }
+.sq-meta  { font-size:10px; opacity:.55; margin-bottom:2px; color:white; }
+.sq-intro { font-size:11px; opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:white; }
+.sq-btn   { padding:5px 11px; border-radius:14px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.08); color:white; font-size:10px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0; }
+.noreg-tip { text-align:center; padding:2rem 1rem; opacity:.65; font-size:13px; line-height:1.7; color:white; }
+.noreg-tip span { font-size:34px; display:block; margin-bottom:.75rem; }
+
+/* ========== SLIDE 7：我的消息 ========== */
+.msg-wrap { max-width:340px; margin:0 auto; width:100%; }
+.conv-wrap { display:flex; flex-direction:column; gap:7px; max-height:55vh; overflow-y:auto; }
+.conv-wrap::-webkit-scrollbar { display:none; }
+.conv-c { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:.7rem .875rem; backdrop-filter:blur(8px); cursor:pointer; }
+.conv-av   { font-size:24px; width:40px; height:40px; background:rgba(255,255,255,.1); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.conv-info { flex:1; text-align:left; min-width:0; }
+.conv-name { font-size:13px; font-weight:700; margin-bottom:2px; color:white; }
+.conv-last { font-size:11px; opacity:.6; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:white; }
+.conv-t    { font-size:10px; opacity:.4; flex-shrink:0; color:white; }
+.empty-conv { text-align:center; padding:2rem; opacity:.6; font-size:13px; line-height:1.7; color:white; }
+.empty-conv span { font-size:34px; display:block; margin-bottom:.75rem; }
+
+
+/* ========== SLIDE 8：照片直播 ========== */
+.photo-wrap{max-width:340px;width:100%;display:flex;flex-direction:column;gap:10px;}
+.photo-upload-zone{
+  background:rgba(255,255,255,.07);
+  border:1.5px dashed rgba(255,255,255,.25);
+  border-radius:16px;padding:18px 16px;
+  text-align:center;cursor:pointer;
+  transition:background .2s,border-color .2s;
+}
+.photo-upload-zone:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.45);}
+.puz-icon{font-size:30px;margin-bottom:8px;}
+.puz-text{font-size:13px;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:4px;}
+.puz-sub{font-size:11px;color:rgba(255,255,255,.4);}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:38vh;overflow-y:auto;}
+.photo-grid::-webkit-scrollbar{display:none;}
+.photo-item{
+  aspect-ratio:1;border-radius:10px;overflow:hidden;
+  background:rgba(255,255,255,.08);position:relative;
+  border:1px solid rgba(255,255,255,.1);
+}
+.photo-item img{width:100%;height:100%;object-fit:cover;}
+.photo-item .photo-del{
+  position:absolute;top:4px;right:4px;
+  width:18px;height:18px;border-radius:50%;
+  background:rgba(0,0,0,.6);color:white;
+  font-size:11px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:none;font-family:inherit;
+}
+.photo-empty{text-align:center;padding:1.5rem 1rem;opacity:.5;color:white;font-size:13px;line-height:1.7;}
+.photo-empty span{font-size:30px;display:block;margin-bottom:.5rem;}
+.photo-count{font-size:11px;color:rgba(255,255,255,.4);text-align:right;margin-top:2px;}
+#photo-input{display:none;}
+
+/* ========== 聊天浮层 ========== */
+#chat-layer { display:none; position:fixed; inset:0; z-index:500; background:#1a0a2e; flex-direction:column; }
+#chat-layer.open { display:flex; }
+.ct { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#6a0572,#c850c0); padding:.875rem 1rem; padding-top:calc(.875rem + env(safe-area-inset-top)); color:white; flex-shrink:0; }
+.ct-back { background:none; border:none; color:white; font-size:26px; cursor:pointer; line-height:1; padding:2px 4px; }
+.ct-av   { font-size:24px; width:38px; height:38px; background:rgba(255,255,255,.2); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.ct-info { flex:1; }
+.ct-name { font-size:16px; font-weight:600; }
+.ct-status { font-size:11px; opacity:.75; display:flex; align-items:center; gap:4px; }
+.online-dot { width:6px; height:6px; background:#4ade80; border-radius:50%; }
+.chat-msgs { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:10px; background:#1a0a2e; }
+.chat-msgs::-webkit-scrollbar { width:2px; }
+.chat-msgs::-webkit-scrollbar-thumb { background:rgba(255,255,255,.2); border-radius:2px; }
+.bw { display:flex; align-items:flex-end; gap:8px; }
+.bw.mine { flex-direction:row-reverse; }
+.bav { font-size:18px; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.bb { max-width:65%; padding:10px 13px; border-radius:16px; font-size:14px; line-height:1.5; word-break:break-word; }
+.bw.theirs .bb { background:rgba(255,255,255,.12); color:white; border-bottom-left-radius:4px; }
+.bw.mine   .bb { background:linear-gradient(135deg,#c850c0,#e040a0); color:white; border-bottom-right-radius:4px; }
+.bt { font-size:10px; color:rgba(255,255,255,.35); padding:0 4px; }
+.chat-bar { display:flex; align-items:center; gap:8px; padding:.75rem 1rem; background:#2a0a3e; border-top:1px solid rgba(255,255,255,.1); padding-bottom:calc(.75rem + env(safe-area-inset-bottom)); flex-shrink:0; }
+.ci { flex:1; padding:10px 14px; border-radius:22px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:white; font-size:14px; outline:none; font-family:inherit; }
+.ci::placeholder { color:rgba(255,255,255,.3); }
+.ci:focus { border-color:rgba(255,255,255,.5); }
+.cs { width:40px; height:40px; border-radius:50%; border:none; background:linear-gradient(135deg,#c850c0,#e040a0); color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+/* ========== Toast ========== */
+
+/* ========== 音乐播放按钮 ========== */
+#music-btn {
+  position: fixed; bottom: 36px; right: 18px; z-index: 300;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .25s, transform .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ========== 音乐控制按钮 ========== */
+#music-btn {
+  position: fixed; bottom: 36px; right: 16px; z-index: 300;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .2s, transform .15s;
+  color: white; font-size: 18px;
+}
+#music-btn:hover  { background: rgba(255,255,255,.22); }
+#music-btn:active { transform: scale(.92); }
+#music-btn.playing { background: rgba(200,80,192,.35); border-color: rgba(200,80,192,.6); }
+
+/* 音符波动动画 */
+@keyframes noteDrift {
+  0%   { opacity:0; transform: translateY(0) scale(.7); }
+  30%  { opacity:.9; }
+  100% { opacity:0; transform: translateY(-32px) scale(1.1); }
+}
+.music-note {
+  position: fixed; right: 26px; pointer-events: none; z-index: 299;
+  font-size: 13px; animation: noteDrift 1.8s ease-out forwards;
+}
+
+#music-btn:hover { background: rgba(255,255,255,.22); }
+#music-btn:active { transform: scale(.92); }
+#music-btn svg { width: 20px; height: 20px; }
+
+/* 旋转动画（播放中） */
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+#music-disc {
+  position: fixed; bottom: 84px; right: 18px; z-index: 299;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(200,80,192,.25);
+  border: 1px solid rgba(200,80,192,.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  opacity: 0; transition: opacity .4s;
+  pointer-events: none;
+}
+#music-disc.playing {
+  opacity: 1;
+  animation: spin 4s linear infinite;
+}
+
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,.75); color:white; padding:10px 20px; border-radius:20px; font-size:14px; z-index:600; pointer-events:none; opacity:0; transition:opacity .3s; white-space:nowrap; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<!-- 右侧圆点导航 -->
+<div id="dots"></div>
+
+<!-- 滑动提示 -->
+<div id="swipe-hint-el">
+  <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+  <span>向下滑动</span>
+</div>
+
+<!-- ========== 主容器 ========== -->
+<div id="slider">
+
+  <!-- ===== slide 0：封面目录（优化版） ===== -->
+  <div class="slide s0">
+    <div class="bg"></div>
+    <div class="bg-overlay"></div>
+    <div class="cv-stars" id="cv-stars"></div>
+    <div class="cv-glow1"></div>
+    <div class="cv-glow2"></div>
+    <div class="cv-glow3"></div>
+    <div class="cv-grid"></div>
+
+    <div class="cv-top anim-down d1">
+      <div class="cv-brand-line"></div>
+      <div class="cv-badge">西南油气田公司 · 2026</div>
+      <div class="cv-brand-line"></div>
+    </div>
+
+    <div class="cv-hero">
+      <div class="cv-ring-wrap anim-scale d2">
+        <div class="cv-ring-outer"></div>
+        <div class="cv-ring-inner"></div>
+        <div class="cv-core">❤</div>
+      </div>
+      <div class="cv-title-group anim-up d2">
+        <div class="cv-title-en">Singles Social Event</div>
+        <div class="cv-title">单身职工<br>联谊活动</div>
+      </div>
+      <div class="cv-deco-line anim-scale d3">
+        <div class="cv-deco-bar"></div>
+        <div class="cv-deco-diamond"></div>
+        <div class="cv-deco-bar"></div>
+      </div>
+      <div class="cv-sub-tags anim-up d3">
+        <span class="cv-sub-tag">全员参与</span>
+        <span class="cv-sub-tag">零尴尬</span>
+        <span class="cv-sub-tag">强互动</span>
+        <span class="cv-sub-tag">轻松安全</span>
+      </div>
+      <div class="cv-date anim-up d4">
+        <div class="cv-date-dot"></div>
+        2026年5月20日
+      </div>
+    </div>
+
+    <div class="cv-menu anim-up d4">
+      <div class="cv-item" onclick="goTo(1)">
+        <div class="ci-icon" style="background:rgba(99,102,241,.2)">🗓</div>
+        <div class="ci-text"><span class="ci-num">01</span><span class="ci-name">活动流程</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(2)">
+        <div class="ci-icon" style="background:rgba(168,85,247,.2)">🎮</div>
+        <div class="ci-text"><span class="ci-num">02</span><span class="ci-name">破冰游戏</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(3)">
+        <div class="ci-icon" style="background:rgba(236,72,153,.2)">🎸</div>
+        <div class="ci-text"><span class="ci-num">03</span><span class="ci-name">晚间精彩</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(4)">
+        <div class="ci-icon" style="background:rgba(245,158,11,.2)">🎁</div>
+        <div class="ci-text"><span class="ci-num">04</span><span class="ci-name">丰厚奖品</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(5)">
+        <div class="ci-icon" style="background:rgba(16,185,129,.2)">✍</div>
+        <div class="ci-text"><span class="ci-num">05</span><span class="ci-name">参与报名</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(6)">
+        <div class="ci-icon" style="background:rgba(6,182,212,.2)">👥</div>
+        <div class="ci-text"><span class="ci-num">06</span><span class="ci-name">参与者广场</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(7)">
+        <div class="ci-icon" style="background:rgba(139,92,246,.2)">💬</div>
+        <div class="ci-text"><span class="ci-num">07</span><span class="ci-name">我的消息</span></div>
+      </div>
+      <div class="cv-item" onclick="goTo(8)">
+        <div class="ci-icon" style="background:rgba(14,116,144,.2)">📷</div>
+        <div class="ci-text"><span class="ci-num">08</span><span class="ci-name">照片直播</span></div>
+      </div>
+    </div>
+
+    <div class="cv-foot anim-up d5">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"><polyline points="3,5 7,9 11,5"/></svg>
+      <span>向下滑动探索</span>
+    </div>
+  </div>
+
+  <!-- ===== slide 1：活动流程 ===== -->
+  <div class="slide s1">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p1"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">SCHEDULE</div>
+      <div class="pg-title anim-down d2">活动流程</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="tl-card-new">
+        <div class="tl-row-new anim-up d2">
+          <div class="tl-accent" style="background:#c850c0"></div>
+          <div class="tl-left-new">
+            <div class="tl-icon-new">☀</div>
+            <div class="tl-dur-new">2小时</div>
+          </div>
+          <div class="tl-body-new">
+            <div class="tl-time-new">15:30 — 17:30</div>
+            <div class="tl-name-new">下午场 · 全员破冰互动</div>
+            <div class="tl-desc-new">主持人开场，随机分组10-12组，8个趣味破冰游戏，全程零压力</div>
+          </div>
+        </div>
+        <div class="tl-row-new anim-up d3">
+          <div class="tl-accent" style="background:#f59e0b"></div>
+          <div class="tl-left-new">
+            <div class="tl-icon-new">🍽</div>
+            <div class="tl-dur-new">1.5h</div>
+          </div>
+          <div class="tl-body-new">
+            <div class="tl-time-new">17:30 — 19:00</div>
+            <div class="tl-name-new">晚餐时间 · 自由交流</div>
+            <div class="tl-desc-new">全员随机入座，轻松用餐，轻音乐伴奏，温馨惬意</div>
+          </div>
+        </div>
+        <div class="tl-row-new anim-up d4">
+          <div class="tl-accent" style="background:#4158d0"></div>
+          <div class="tl-left-new">
+            <div class="tl-icon-new">🌙</div>
+            <div class="tl-dur-new">1.5h</div>
+          </div>
+          <div class="tl-body-new">
+            <div class="tl-time-new">20:00 — 21:30</div>
+            <div class="tl-name-new">晚间场 · 音乐演出 + 心动选择</div>
+            <div class="tl-desc-new">乐队演出 · 竞拍互动 · 心动评选 · 配对表白 · 大合唱《成都》</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== slide 2：破冰游戏 ===== -->
+  <div class="slide s2">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p2"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">GAMES</div>
+      <div class="pg-title anim-down d2">破冰游戏</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="games-grid-new anim-up d3" id="games-scroll">
+        <div class="gc gc-c1"><div class="gc-num">01</div><div class="gc-name">钱钱抱抱</div><div class="gc-dur">15分钟</div></div>
+        <div class="gc gc-c2"><div class="gc-num">02</div><div class="gc-name">过五关斩六将</div><div class="gc-dur">20分钟</div></div>
+        <div class="gc gc-c3"><div class="gc-num">03</div><div class="gc-name">气球接力</div><div class="gc-dur">20分钟</div></div>
+        <div class="gc gc-c4"><div class="gc-num">04</div><div class="gc-name">赶猪比赛</div><div class="gc-dur">15分钟</div></div>
+        <div class="gc gc-c5"><div class="gc-num">05</div><div class="gc-name">群龙取水</div><div class="gc-dur">20分钟</div></div>
+        <div class="gc gc-c6"><div class="gc-num">06</div><div class="gc-name">松鼠与大树</div><div class="gc-dur">20分钟</div></div>
+        <div class="gc gc-alt" style="grid-column:1/3"><div class="gc-num">备选</div><div class="gc-name">爱有轨迹</div><div class="gc-dur">20分钟</div></div>
+        <div class="gc gc-alt"><div class="gc-num">备选</div><div class="gc-name">害你在心头难开</div><div class="gc-dur">30分钟</div></div>
+      </div>
+      <div class="games-hint-new anim-up d4">点击卡片可查看游戏详情</div>
+    </div>
+  </div>
+
+  <!-- ===== slide 3：晚间精彩 ===== -->
+  <div class="slide s3">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p3"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">HIGHLIGHTS</div>
+      <div class="pg-title anim-down d2">晚间精彩</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="hl-grid">
+        <div class="hl-card anim-up d2">
+          <div class="hl-card-icon">🎸</div>
+          <div class="hl-card-name">乐队开场演出</div>
+          <div class="hl-card-desc">经典串烧带动全场大合唱</div>
+        </div>
+        <div class="hl-card anim-up d3">
+          <div class="hl-card-icon">🏆</div>
+          <div class="hl-card-name">全员趣味竞拍</div>
+          <div class="hl-card-desc">运动为货币赢取大奖</div>
+        </div>
+        <div class="hl-card anim-up d4">
+          <div class="hl-card-icon">💝</div>
+          <div class="hl-card-name">心动配对评选</div>
+          <div class="hl-card-desc">异性互投自愿表白</div>
+        </div>
+        <div class="hl-card anim-up d4">
+          <div class="hl-card-icon">🎯</div>
+          <div class="hl-card-name">为爱冲刺</div>
+          <div class="hl-card-desc">勇敢表白成功与否都鼓掌</div>
+        </div>
+        <div class="hl-card span2 anim-up d5">
+          <div class="hl-card-icon">🎵</div>
+          <div class="hl-card-text">
+            <div class="hl-card-name">压轴大合唱《成都》</div>
+            <div class="hl-card-desc">全场齐唱，温馨收尾，共赴美好缘分</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== slide 4：丰厚奖品 ===== -->
+  <div class="slide s4">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p4"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">PRIZES</div>
+      <div class="pg-title anim-down d2">丰厚奖品</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="prize-grid-new">
+        <div class="pz pz-c1 anim-scale d2"><span class="pz-icon">📱</span><span class="pz-name">华为MatePAD 11.5</span></div>
+        <div class="pz pz-c2 anim-scale d3"><span class="pz-icon">💄</span><span class="pz-name">化妆品礼盒套装</span></div>
+        <div class="pz pz-c3 anim-scale d4"><span class="pz-icon">🛏</span><span class="pz-name">精美四件套</span></div>
+        <div class="pz pz-c4 anim-scale d3"><span class="pz-icon">🎁</span><span class="pz-name">精美伴手礼</span></div>
+        <div class="pz pz-c5 anim-scale d4"><span class="pz-icon">🧸</span><span class="pz-name">可爱枕头礼品</span></div>
+        <div class="pz pz-c6 anim-scale d5"><span class="pz-icon">🎊</span><span class="pz-name">互动趣味礼品</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== slide 5：参与报名 ===== -->
+  <div class="slide s5">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p5"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">SIGN UP</div>
+      <div class="pg-title anim-down d2">参与报名</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="reg-wrap anim-up d3">
+        <div id="reg-form-wrap" class="form-card">
+          <div class="fg">
+            <span class="fl">选择头像</span>
+            <div class="av-row">
+              <input type="radio" name="av" id="a1" value="🐼" class="ai" checked><label for="a1" class="al">🐼</label>
+              <input type="radio" name="av" id="a2" value="🦊" class="ai"><label for="a2" class="al">🦊</label>
+              <input type="radio" name="av" id="a3" value="🐰" class="ai"><label for="a3" class="al">🐰</label>
+              <input type="radio" name="av" id="a4" value="🐯" class="ai"><label for="a4" class="al">🐯</label>
+              <input type="radio" name="av" id="a5" value="🦄" class="ai"><label for="a5" class="al">🦄</label>
+              <input type="radio" name="av" id="a6" value="🐨" class="ai"><label for="a6" class="al">🐨</label>
+              <input type="radio" name="av" id="a7" value="🐸" class="ai"><label for="a7" class="al">🐸</label>
+            </div>
+          </div>
+          <div class="fg"><span class="fl">昵称</span><input id="rn" type="text" class="fi" placeholder="请输入昵称" maxlength="10"></div>
+          <div class="fg">
+            <span class="fl">性别</span>
+            <div class="gender-row">
+              <input type="radio" name="gd" id="gm" value="男" class="gr" checked><label for="gm" class="gl">👨 男生</label>
+              <input type="radio" name="gd" id="gf" value="女" class="gr"><label for="gf" class="gl">👩 女生</label>
+            </div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><span class="fl">年龄</span><input id="ra" type="number" class="fi" placeholder="年龄" min="20" max="45"></div>
+            <div class="fg">
+              <span class="fl">部门</span>
+              <select id="rd" class="fi">
+                <option value="">选择部门</option>
+                <option>勘探开发部</option><option>工程技术部</option>
+                <option>财务部</option><option>人力资源部</option>
+                <option>安全环保部</option><option>信息技术部</option>
+                <option>综合管理部</option><option>其他部门</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><span class="fl">一句话介绍</span><input id="ri" type="text" class="fi" placeholder="比如：喜欢爬山的工程师 🏔️" maxlength="25"></div>
+          <button class="reg-btn" onclick="doReg()">立即报名 🎉</button>
+        </div>
+        <div id="profile-done-wrap" style="display:none" class="profile-done">
+          <div id="pd-av" class="pd-avatar">🐼</div>
+          <div id="pd-nm" class="pd-name"></div>
+          <div id="pd-no" class="pd-no"></div>
+          <div id="pd-rows"></div>
+          <button class="edit-btn-w" onclick="editReg()">修改资料</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== slide 6：参与者广场 ===== -->
+  <div class="slide s6">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p6"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">DISCOVER</div>
+      <div class="pg-title anim-down d2">参与者广场</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="sq-wrap anim-up d3">
+        <div class="sq-filters">
+          <button class="sq-chip active" onclick="sqFilter('all',this)">全部</button>
+          <button class="sq-chip" onclick="sqFilter('男',this)">男生</button>
+          <button class="sq-chip" onclick="sqFilter('女',this)">女生</button>
+        </div>
+        <div id="sq-list" class="sq-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== slide 7：我的消息 ===== -->
+  <div class="slide s7">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p7"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">MESSAGES</div>
+      <div class="pg-title anim-down d2">我的消息</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="msg-wrap anim-up d3">
+        <div id="conv-wrap" class="conv-wrap"></div>
+        <div id="empty-conv" class="empty-conv"><span>💬</span>还没有聊天记录<br>去广场认识新朋友吧</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===== slide 8：照片直播 ===== -->
+  <div class="slide s8">
+    <div class="bg"></div><div class="bg-overlay"></div>
+    <div class="particles" id="p8"></div>
+    <div class="pg-wrap">
+      <div class="pg-eyebrow anim-down d1">LIVE PHOTOS</div>
+      <div class="pg-title anim-down d2">照片直播</div>
+      <div class="pg-rule anim-scale d2"></div>
+      <div class="photo-wrap anim-up d3">
+        <input type="file" id="photo-input" accept="image/*" multiple>
+        <div class="photo-upload-zone" onclick="document.getElementById('photo-input').click()">
+          <div class="puz-icon">📷</div>
+          <div class="puz-text">上传活动照片</div>
+          <div class="puz-sub">点击选择照片 · 支持多张</div>
+        </div>
+        <div id="photo-count-el" class="photo-count"></div>
+        <div id="photo-grid" class="photo-grid">
+          <div class="photo-empty"><span>🖼</span>暂无照片<br>上传后在这里实时展示</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /slider -->
+
+<!-- 聊天浮层 -->
+<div id="chat-layer">
+  <div class="ct">
+    <button class="ct-back" onclick="closeChat()">‹</button>
+    <div id="ct-av" class="ct-av">🐼</div>
+    <div class="ct-info">
+      <div id="ct-name" class="ct-name"></div>
+      <div class="ct-status"><span class="online-dot"></span>在线</div>
+    </div>
+  </div>
+  <div id="chat-msgs" class="chat-msgs"></div>
+  <div class="chat-bar">
+    <input id="chat-ci" class="ci" type="text" placeholder="说点什么..." maxlength="200" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="cs" onclick="sendMsg()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+    </button>
+  </div>
+</div>
+
+
+<!-- 音乐按钮 -->
+<div id="music-disc">🎵</div>
+<button id="music-btn" onclick="toggleMusic()" title="背景音乐">
+  <svg id="music-icon-play" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M9.5 8.5l7 3.5-7 3.5V8.5z" fill="white" stroke="none"/>
+  </svg>
+  <svg id="music-icon-pause" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="display:none">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="9" y1="8" x2="9" y2="16"/><line x1="15" y1="8" x2="15" y2="16"/>
+  </svg>
+</button>
+
+
+<!-- 音乐控制按钮 -->
+<div id="music-btn" onclick="toggleMusic()" title="背景音乐">
+  <svg id="music-icon-play" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+  <svg id="music-icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="white" style="display:none"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ===== 数据层 =====
+const SK='xnyq_u', MK='xnyq_m', MEK='xnyq_me';
+const getUsers = ()=>{ try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){return[]} };
+const saveUsers = u=>localStorage.setItem(SK,JSON.stringify(u));
+const getMsgs   = ()=>{ try{return JSON.parse(localStorage.getItem(MK)||'{}')}catch(e){return{}} };
+const saveMsgs  = m=>localStorage.setItem(MK,JSON.stringify(m));
+const getMe     = ()=>{ try{return JSON.parse(localStorage.getItem(MEK)||'null')}catch(e){return null} };
+const saveMe    = m=>localStorage.setItem(MEK,JSON.stringify(m));
+
+// ===== 演示用户 =====
+function initDemos(){
+  if(getUsers().length>0) return;
+  saveUsers([
+    {id:'d1',name:'山野阿浩',avatar:'🦊',gender:'男',age:28,dept:'勘探开发部',intro:'喜欢爬山的工程师',time:'09:30',isDemo:true},
+    {id:'d2',name:'晴天小琪',avatar:'🐰',gender:'女',age:26,dept:'人力资源部',intro:'爱生活爱音乐的HR',time:'10:15',isDemo:true},
+    {id:'d3',name:'大漠孤烟',avatar:'🐼',gender:'男',age:30,dept:'工程技术部',intro:'钻井工程师，爱下棋',time:'11:00',isDemo:true},
+    {id:'d4',name:'轻风如意',avatar:'🦄',gender:'女',age:27,dept:'财务部',intro:'数字背后的温柔人',time:'11:45',isDemo:true},
+    {id:'d5',name:'朝阳阿强',avatar:'🐯',gender:'男',age:29,dept:'安全环保部',intro:'安全第一，快乐第一',time:'13:20',isDemo:true},
+    {id:'d6',name:'碧海蓝天',avatar:'🐨',gender:'女',age:25,dept:'信息技术部',intro:'代码与咖啡是我的日常',time:'14:00',isDemo:true},
+  ]);
+}
+
+// ===== 粒子 =====
+function makeParticles(id,n){
+  const el=document.getElementById(id); if(!el) return;
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div'); d.className='particle';
+    const sz=3+Math.random()*8;
+    d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*10}s;`;
+    el.appendChild(d);
+  }
+}
+for(let i=0;i<9;i++) makeParticles('p'+i,10);
+
+// ===== 翻页核心 =====
+const TOTAL=9;
+let cur=0, isAnim=false, startY=0, isDragging=false;
+const slider=document.getElementById('slider');
+const slides=document.querySelectorAll('.slide');
+
+// 圆点导航
+const dotsEl=document.getElementById('dots');
+const slideNames=['封面','流程','游戏','晚间','奖品','报名','广场','消息','照片'];
+for(let i=0;i<TOTAL;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.title=slideNames[i];
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n){
+  if(n<0||n>=TOTAL||n===cur||isAnim) return;
+  isAnim=true;
+  slides[cur].classList.remove('active');
+  cur=n;
+  slides[cur].classList.add('active');
+  slider.style.transform=`translateY(-${cur*100}vh)`;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  if(cur===6) renderSquare();
+  if(cur===7) renderConvs();
+  if(cur>0) document.getElementById('swipe-hint-el').style.opacity='0';
+  else document.getElementById('swipe-hint-el').style.opacity='1';
+  setTimeout(()=>{ isAnim=false; },750);
+}
+
+// 触摸滑动
+document.addEventListener('touchstart',e=>{
+  if(document.getElementById('chat-layer').classList.contains('open')) return;
+  const tag=e.target.tagName.toLowerCase();
+  if(['input','select','textarea','button','label'].includes(tag)) return;
+  if(e.target.closest('#games-scroll')||e.target.closest('.sq-list')||e.target.closest('.conv-wrap')||e.target.closest('.chat-msgs')) return;
+  startY=e.touches[0].clientY; isDragging=true;
+},{passive:true});
+
+document.addEventListener('touchend',e=>{
+  if(!isDragging) return; isDragging=false;
+  const dy=startY-e.changedTouches[0].clientY;
+  if(Math.abs(dy)>45) goTo(dy>0?cur+1:cur-1);
+},{passive:true});
+
+// 鼠标滚轮
+let wheelLock=false;
+document.addEventListener('wheel',e=>{
+  if(document.getElementById('chat-layer').classList.contains('open')) return;
+  if(e.target.closest('#games-scroll')||e.target.closest('.sq-list')||e.target.closest('.conv-wrap')) return;
+  if(wheelLock) return; wheelLock=true;
+  goTo(e.deltaY>0?cur+1:cur-1);
+  setTimeout(()=>{ wheelLock=false; },800);
+},{passive:true});
+
+// 激活封面
+slides[0].classList.add('active');
+
+// ===== 报名 =====
+function doReg(){
+  const name=document.getElementById('rn').value.trim();
+  const age=document.getElementById('ra').value.trim();
+  const dept=document.getElementById('rd').value;
+  const intro=document.getElementById('ri').value.trim();
+  const gender=document.querySelector('input[name="gd"]:checked').value;
+  const avatar=document.querySelector('input[name="av"]:checked').value;
+  if(!name){toast('请填写昵称');return;}
+  if(!age){toast('请填写年龄');return;}
+  if(!dept){toast('请选择部门');return;}
+  const users=getUsers();
+  const now=new Date();
+  const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const no='XY'+String(users.filter(u=>!u.isDemo).length+1).padStart(3,'0');
+  const me={id:'me_'+Date.now(),name,avatar,gender,age,dept,intro:intro||'神秘的Ta',time:t,no};
+  saveMe(me); users.push(me); saveUsers(users);
+  renderProfile();
+  toast('报名成功！欢迎参与联谊活动 🎉');
+}
+
+function renderProfile(){
+  const me=getMe();
+  document.getElementById('reg-form-wrap').style.display=me?'none':'block';
+  document.getElementById('profile-done-wrap').style.display=me?'block':'none';
+  if(!me) return;
+  document.getElementById('pd-av').textContent=me.avatar;
+  document.getElementById('pd-nm').textContent=me.name;
+  document.getElementById('pd-no').textContent='编号：'+(me.no||'XY001');
+  document.getElementById('pd-rows').innerHTML=[
+    ['性别',me.gender],['年龄',me.age+'岁'],['部门',me.dept],['介绍',me.intro]
+  ].map(([l,v])=>`<div class="pd-row"><span class="pd-lbl">${l}</span><span class="pd-val">${v}</span></div>`).join('');
+}
+
+function editReg(){
+  const me=getMe(); if(!me) return;
+  document.getElementById('rn').value=me.name;
+  document.getElementById('ra').value=me.age;
+  document.getElementById('rd').value=me.dept;
+  document.getElementById('ri').value=me.intro;
+  document.querySelectorAll('input[name="gd"]').forEach(r=>{if(r.value===me.gender)r.checked=true;});
+  document.querySelectorAll('input[name="av"]').forEach(r=>{if(r.value===me.avatar)r.checked=true;});
+  const users=getUsers().filter(u=>u.id!==me.id);
+  saveUsers(users); localStorage.removeItem(MEK);
+  renderProfile();
+}
+
+// ===== 广场 =====
+let sqF='all';
+function sqFilter(f,btn){
+  sqF=f;
+  document.querySelectorAll('.sq-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderSquare();
+}
+
+function renderSquare(){
+  const me=getMe(); const el=document.getElementById('sq-list');
+  if(!me){ el.innerHTML='<div class="noreg-tip"><span>👋</span>报名后才能查看其他参与者<br>并与他们一对一交流</div>'; return; }
+  const users=getUsers().filter(u=>u.id!==me.id&&(sqF==='all'||u.gender===sqF));
+  if(!users.length){ el.innerHTML='<div class="noreg-tip"><span>🔍</span>暂无符合条件的参与者</div>'; return; }
+  el.innerHTML=users.map(u=>`
+    <div class="sq-card" onclick="openChat('${u.id}')">
+      <div class="sq-av">${u.avatar}</div>
+      <div class="sq-info">
+        <div class="sq-name">${esc(u.name)} <span style="font-size:11px;opacity:.6;font-weight:400">${u.gender}·${u.age}岁</span></div>
+        <div class="sq-meta">${esc(u.dept)}</div>
+        <div class="sq-intro">${esc(u.intro)}</div>
+      </div>
+      <button class="sq-btn">聊一聊</button>
+    </div>`).join('');
+}
+
+// ===== 聊天 =====
+let chatId=null, replyTimer=null;
+const replies=['哈哈，你好！很高兴认识你 😊','有意思！你平时喜欢做什么？','好巧，我也很喜欢这个！','活动当天我们多交流哈','5月20日见！期待破冰游戏 😄','嗯嗯，期待活动当天见到你 🌟','那真是太有缘了！','期待一起合唱《成都》🎵','你说得对，哈哈！','太棒了，感觉我们挺聊得来的'];
+
+function chatKey(uid){ const me=getMe(); if(!me) return null; return [me.id,uid].sort().join('_'); }
+
+function openChat(uid){
+  const me=getMe();
+  if(!me){ toast('请先报名参与活动'); goTo(5); return; }
+  const user=getUsers().find(u=>u.id===uid); if(!user) return;
+  chatId=uid;
+  document.getElementById('ct-av').textContent=user.avatar;
+  document.getElementById('ct-name').textContent=user.name;
+  renderMsgs();
+  document.getElementById('chat-layer').classList.add('open');
+  document.body.style.overflow='hidden';
+  const key=chatKey(uid); const msgs=getMsgs();
+  if(!msgs[key]||!msgs[key].length){
+    setTimeout(()=>recvMsg(uid,'你好！我是'+user.name+'，很高兴认识你 😊 期待5月20日和你互动！'),700);
+  }
+}
+
+function closeChat(){
+  document.getElementById('chat-layer').classList.remove('open');
+  document.body.style.overflow='';
+  chatId=null;
+  if(replyTimer) clearTimeout(replyTimer);
+  if(cur===7) renderConvs();
+}
+
+function renderMsgs(){
+  if(!chatId) return;
+  const me=getMe(); const user=getUsers().find(u=>u.id===chatId);
+  const key=chatKey(chatId); const history=(getMsgs()[key]||[]);
+  const el=document.getElementById('chat-msgs');
+  el.innerHTML=history.map(m=>{
+    const mine=m.from===me.id;
+    const av=mine?me.avatar:(user?user.avatar:'🐼');
+    return `<div class="bw ${mine?'mine':'theirs'}">
+      <div class="bav">${av}</div>
+      <div><div class="bb">${esc(m.text)}</div>
+      <div class="bt" style="text-align:${mine?'right':'left'}">${m.t}</div></div>
+    </div>`;
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+function sendMsg(){
+  const me=getMe(); if(!me||!chatId) return;
+  const inp=document.getElementById('chat-ci');
+  const text=inp.value.trim(); if(!text) return;
+  inp.value='';
+  const key=chatKey(chatId); const msgs=getMsgs();
+  if(!msgs[key]) msgs[key]=[];
+  msgs[key].push({from:me.id,text,t:ft()});
+  saveMsgs(msgs); renderMsgs();
+  if(replyTimer) clearTimeout(replyTimer);
+  replyTimer=setTimeout(()=>recvMsg(chatId,replies[Math.floor(Math.random()*replies.length)]),1000+Math.random()*1500);
+}
+
+function recvMsg(uid,text){
+  const key=chatKey(uid); const msgs=getMsgs();
+  if(!msgs[key]) msgs[key]=[];
+  msgs[key].push({from:uid,text,t:ft()});
+  saveMsgs(msgs);
+  if(chatId===uid) renderMsgs();
+}
+
+function renderConvs(){
+  const me=getMe(); const cw=document.getElementById('conv-wrap'); const ec=document.getElementById('empty-conv');
+  if(!me){ cw.innerHTML=''; ec.style.display='block'; return; }
+  const msgs=getMsgs(); const users=getUsers();
+  const convs=Object.keys(msgs).filter(k=>k.includes(me.id)).map(k=>{
+    const oid=k.replace(me.id,'').replace('_','');
+    const user=users.find(u=>u.id===oid);
+    const hist=msgs[k];
+    if(!user||!hist||!hist.length) return null;
+    return {user,last:hist[hist.length-1]};
+  }).filter(Boolean);
+  if(!convs.length){ cw.innerHTML=''; ec.style.display='block'; return; }
+  ec.style.display='none';
+  cw.innerHTML=convs.map(c=>`
+    <div class="conv-c" onclick="openChat('${c.user.id}')">
+      <div class="conv-av">${c.user.avatar}</div>
+      <div class="conv-info">
+        <div class="conv-name">${esc(c.user.name)}</div>
+        <div class="conv-last">${c.last.from===me.id?'我：':''}${esc(c.last.text)}</div>
+      </div>
+      <div class="conv-t">${c.last.t}</div>
+    </div>`).join('');
+}
+
+// ===== 工具 =====
+function ft(){ const n=new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+
+// ===== 照片直播 =====
+var photoList = [];
+try { photoList = JSON.parse(localStorage.getItem('xnyq_photos') || '[]'); } catch(e){}
+function savePhotos(){ localStorage.setItem('xnyq_photos', JSON.stringify(photoList)); }
+function renderPhotos(){
+  var grid = document.getElementById('photo-grid');
+  var countEl = document.getElementById('photo-count-el');
+  if(!grid) return;
+  if(!photoList.length){
+    grid.innerHTML = '<div class="photo-empty"><span>🖼</span>暂无照片<br>上传后在这里实时展示</div>';
+    countEl.textContent = '';
+    return;
+  }
+  countEl.textContent = '共 ' + photoList.length + ' 张照片';
+  grid.innerHTML = photoList.map(function(src, i){
+    return '<div class="photo-item"><img src="' + src + '" loading="lazy"><button class="photo-del" onclick="delPhoto(' + i + ')">×</button></div>';
+  }).join('');
+}
+function delPhoto(i){
+  photoList.splice(i,1); savePhotos(); renderPhotos();
+}
+document.getElementById('photo-input').addEventListener('change', function(e){
+  var files = Array.from(e.target.files);
+  var remaining = files.length;
+  if(!remaining) return;
+  files.forEach(function(file){
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      photoList.unshift(ev.target.result);
+      remaining--;
+      if(remaining === 0){ savePhotos(); renderPhotos(); }
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+});
+renderPhotos();
+
+
+// ===== 背景音乐（Web Audio API 合成） =====
+var audioCtx = null, musicPlaying = false, musicNodes = [];
+
+// 音阶映射（C大调，温馨浪漫风格）
+var notes = {
+  C4:261.63, D4:293.66, E4:329.63, F4:349.23,
+  G4:392.00, A4:440.00, B4:493.88,
+  C5:523.25, D5:587.33, E5:659.25, G5:783.99, A5:880.00,
+  G3:196.00, A3:220.00, C3:130.81, F3:174.61, E3:164.81
+};
+
+// 主旋律（温馨小调，类似《成都》氛围）
+var melody = [
+  ['E4',0.5],['G4',0.5],['A4',1],['G4',0.5],['E4',0.5],
+  ['D4',1],['E4',0.5],['D4',0.5],['C4',1],
+  ['E4',0.5],['G4',0.5],['A4',1],['B4',0.5],['A4',0.5],
+  ['G4',2],
+  ['A4',0.5],['G4',0.5],['E4',1],['D4',0.5],['E4',0.5],
+  ['G4',1],['A4',0.5],['G4',0.5],['E4',1],
+  ['D4',0.5],['E4',0.5],['G4',1],['E4',0.5],['D4',0.5],
+  ['C4',2],
+];
+
+// 和弦伴奏
+var chords = [
+  [[261.63,329.63,392.00], 2],  // C大三和弦
+  [[174.61,220.00,261.63], 2],  // F大三和弦
+  [[196.00,246.94,293.66], 2],  // G大三和弦
+  [[220.00,261.63,329.63], 2],  // Am
+  [[261.63,329.63,392.00], 2],
+  [[174.61,220.00,261.63], 2],
+  [[196.00,246.94,293.66], 2],
+  [[261.63,329.63,392.00], 2],
+];
+
+function createCtx() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playNote(freq, startTime, duration, gainVal, type) {
+  if (!audioCtx) return;
+  var osc = audioCtx.createOscillator();
+  var gain = audioCtx.createGain();
+  var master = audioCtx.createGain();
+  master.gain.value = 0.18;
+  osc.type = type || 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(gainVal, startTime + 0.05);
+  gain.gain.setValueAtTime(gainVal, startTime + duration - 0.08);
+  gain.gain.linearRampToValueAtTime(0, startTime + duration);
+  osc.connect(gain); gain.connect(master); master.connect(audioCtx.destination);
+  osc.start(startTime); osc.stop(startTime + duration);
+  musicNodes.push(osc);
+}
+
+function playChord(freqs, startTime, duration) {
+  freqs.forEach(function(f) { playNote(f, startTime, duration, 0.25, 'triangle'); });
+}
+
+function scheduleMelody(loopStart) {
+  if (!musicPlaying) return;
+  var t = audioCtx.currentTime + 0.05;
+  var bpm = 76, beat = 60 / bpm;
+  var totalDur = 0;
+
+  // 主旋律
+  melody.forEach(function(n) {
+    var freq = notes[n[0]], dur = n[1] * beat;
+    playNote(freq, t + totalDur, dur * 0.88, 0.55, 'sine');
+    totalDur += dur;
+  });
+
+  // 和弦伴奏（低音区）
+  var ct = 0;
+  chords.forEach(function(ch) {
+    playChord(ch[0].map(function(f){return f*0.5;}), t + ct, ch[1] * beat * 1.9);
+    ct += ch[1] * beat * 2;
+  });
+
+  // 装饰音（高八度轻弹）
+  var dt = 0;
+  [['G5',0.5],['E5',0.5],['G5',1],['A5',0.5],['G5',0.5],['E5',2]].forEach(function(n) {
+    var dur = n[1] * beat;
+    playNote(notes[n[0]] || 783.99, t + dt + beat*4, dur * 0.7, 0.18, 'sine');
+    dt += dur;
+  });
+
+  // 下一循环
+  setTimeout(function() { if (musicPlaying) scheduleMelody(); }, totalDur * 1000 - 200);
+}
+
+function startMusic() {
+  createCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  musicPlaying = true;
+  scheduleMelody();
+  document.getElementById('music-icon-play').style.display = 'none';
+  document.getElementById('music-icon-pause').style.display = 'block';
+  document.getElementById('music-disc').classList.add('playing');
+}
+
+function stopMusic() {
+  musicPlaying = false;
+  musicNodes.forEach(function(n) { try { n.stop(); } catch(e){} });
+  musicNodes = [];
+  document.getElementById('music-icon-play').style.display = 'block';
+  document.getElementById('music-icon-pause').style.display = 'none';
+  document.getElementById('music-disc').classList.remove('playing');
+}
+
+function toggleMusic() {
+  if (musicPlaying) { stopMusic(); } else { startMusic(); }
+}
+
+
+// ===== 背景音乐（Web Audio API 合成） =====
+(function(){
+  var ctx = null, playing = false, scheduledNodes = [], masterGain = null;
+  var noteTimer = null, btnEl, iconPlay, iconPause;
+
+  // 浪漫旋律音符序列（C大调 + 小调色彩，适合联谊活动）
+  // 格式: [频率Hz, 时长拍, 力度0-1]
+  var melody = [
+    // 第一段：温柔开场
+    [523.25,1,.7],[587.33,.5,.6],[659.26,.5,.65],[698.46,1,.7],
+    [659.26,.5,.6],[587.33,.5,.55],[523.25,2,.8],
+    [440.00,1,.65],[493.88,.5,.6],[523.25,.5,.65],[587.33,1,.7],
+    [523.25,.5,.6],[493.88,.5,.55],[440.00,2,.75],
+    // 第二段：情感升华
+    [659.26,1,.75],[698.46,.5,.7],[783.99,.5,.75],[880.00,1,.8],
+    [783.99,.5,.7],[698.46,.5,.65],[659.26,2,.85],
+    [587.33,1,.7],[659.26,.5,.65],[587.33,.5,.6],[523.25,1,.7],
+    [493.88,.5,.6],[440.00,.5,.55],[523.25,2,.8],
+    // 第三段：温馨收尾
+    [523.25,.5,.65],[587.33,.5,.6],[659.26,1,.7],[698.46,.5,.65],
+    [659.26,.5,.6],[587.33,1,.65],[523.25,1,.7],
+    [440.00,.5,.6],[493.88,.5,.55],[523.25,1,.65],[587.33,.5,.7],
+    [523.25,.5,.65],[493.88,1,.6],[440.00,2,.75],
+  ];
+
+  // 和弦伴奏（低音烘托气氛）
+  var chords = [
+    [[261.63,329.63,392.00], 4], // C和弦
+    [[220.00,277.18,329.63], 4], // Am和弦
+    [[174.61,220.00,261.63], 4], // F和弦
+    [[196.00,246.94,293.66], 4], // G和弦
+    [[261.63,329.63,392.00], 4],
+    [[220.00,277.18,329.63], 4],
+    [[174.61,220.00,261.63], 4],
+    [[196.00,246.94,293.66], 4],
+  ];
+
+  function initAudio() {
+    if (ctx) return true;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.0, ctx.currentTime);
+      masterGain.connect(ctx.destination);
+      return true;
+    } catch(e) { return false; }
+  }
+
+  function createOsc(freq, startTime, duration, gainVal, type, attack, release) {
+    type = type || 'sine';
+    attack = attack || 0.05;
+    release = release || 0.15;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, startTime);
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(gainVal, startTime + attack);
+    gain.gain.setValueAtTime(gainVal, startTime + duration - release);
+    gain.gain.linearRampToValueAtTime(0, startTime + duration);
+    osc.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.05);
+    scheduledNodes.push(osc);
+    return osc;
+  }
+
+  function scheduleMusic() {
+    var bpm = 72;
+    var beat = 60 / bpm;
+    var t = ctx.currentTime + 0.1;
+    var melodyIdx = 0;
+    var totalBeats = melody.reduce(function(s,n){return s+n[1];},0);
+
+    // 调度旋律（钢琴音色：正弦+三角叠加）
+    var mt = t;
+    melody.forEach(function(note) {
+      var freq = note[0], dur = note[1]*beat, vel = note[2];
+      createOsc(freq, mt, dur*0.9, vel*0.5, 'sine', 0.03, dur*0.3);
+      createOsc(freq, mt, dur*0.9, vel*0.18, 'triangle', 0.03, dur*0.3);
+      // 泛音增加温度
+      createOsc(freq*2, mt, dur*0.6, vel*0.06, 'sine', 0.05, dur*0.2);
+      mt += dur;
+    });
+
+    // 调度和弦低音（慢速，增加深度）
+    var ct = t;
+    chords.forEach(function(chord) {
+      var freqs = chord[0], dur = chord[1]*beat;
+      freqs.forEach(function(freq) {
+        createOsc(freq, ct, dur*0.85, 0.12, 'sine', 0.1, 0.4);
+      });
+      ct += dur;
+    });
+
+    // 循环调度
+    var totalDur = Math.max(mt - t, ct - t);
+    noteTimer = setTimeout(function(){
+      if(playing) { clearNodes(); scheduleMusic(); }
+    }, (totalDur - 0.5) * 1000);
+  }
+
+  function clearNodes() {
+    scheduledNodes.forEach(function(n){ try{ n.stop(); }catch(e){} });
+    scheduledNodes = [];
+    if(noteTimer) clearTimeout(noteTimer);
+  }
+
+  function fadeIn() {
+    masterGain.gain.cancelScheduledValues(ctx.currentTime);
+    masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 1.5);
+  }
+  function fadeOut(cb) {
+    masterGain.gain.cancelScheduledValues(ctx.currentTime);
+    masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 1.2);
+    setTimeout(cb || function(){}, 1300);
+  }
+
+  function spawnNote() {
+    var notes = ['♪','♫','♩','♬'];
+    var el = document.createElement('div');
+    el.className = 'music-note';
+    el.textContent = notes[Math.floor(Math.random()*notes.length)];
+    el.style.bottom = '44px';
+    el.style.color = 'rgba(216,180,254,.85)';
+    document.body.appendChild(el);
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 1900);
+  }
+  var noteInterval = null;
+
+  window.toggleMusic = function() {
+    btnEl    = btnEl    || document.getElementById('music-btn');
+    iconPlay = iconPlay || document.getElementById('music-icon-play');
+    iconPause= iconPause|| document.getElementById('music-icon-pause');
+
+    if (!initAudio()) { return; }
+    if (ctx.state === 'suspended') ctx.resume();
+
+    if (!playing) {
+      playing = true;
+      btnEl.classList.add('playing');
+      iconPlay.style.display  = 'none';
+      iconPause.style.display = 'block';
+      fadeIn();
+      scheduleMusic();
+      noteInterval = setInterval(spawnNote, 900);
+    } else {
+      playing = false;
+      btnEl.classList.remove('playing');
+      iconPlay.style.display  = 'block';
+      iconPause.style.display = 'none';
+      fadeOut(function(){ clearNodes(); });
+      clearInterval(noteInterval);
+    }
+  };
+})();
+
+// ===== 启动 =====
+// ===== 封面星空 =====
+(function(){
+  var c=document.getElementById('cv-stars');
+  if(!c) return;
+  for(var i=0;i<80;i++){
+    var s=document.createElement('div');
+    s.className='cv-star';
+    var sz=Math.random()<.15?2:1;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+(Math.random()*100)+'%;left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*4)+'s;animation-delay:'+(Math.random()*5)+'s;opacity:'+(0.1+Math.random()*0.3);
+    c.appendChild(s);
+  }
+})();
+
+initDemos();
+renderProfile();
+</script>
+</body>
+</html>
